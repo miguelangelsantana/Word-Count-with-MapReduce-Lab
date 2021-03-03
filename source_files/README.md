@@ -73,9 +73,8 @@ As a reminder, here is what it looks like visually, given the example we used be
 
 ```python
 # Start a local SparkContext
-import pyspark
-pyspark
-sc = pyspark.SparkContext('local[*]') # [*] represents a local context i.e. no cluster
+
+
 ```
 
 To test our code, start with a single text file, `'hamlet.txt'`. First, set a file path variable `file` to the location of `'text/hamlet.txt'`. 
@@ -83,10 +82,7 @@ To test our code, start with a single text file, `'hamlet.txt'`. First, set a fi
 
 ```python
 # Set a path variable for data 
-file = 'text/hamlet.txt'
-file
 
-# 'text/hamlet.txt'
 ```
 
 
@@ -105,16 +101,14 @@ The `textFile(path)` method reads a text file from the HDFS/local file system/an
 
 ```python
 # Read the text file into an RDD using sc.textFile()
-lines = sc.textFile(file)
+lines = None
 lines
-
-# text/hamlet.txt MapPartitionsRDD[36] at textFile at NativeMethodAccessorImpl.java:0
 ```
 
 
 
 
-    text/hamlet.txt MapPartitionsRDD[3] at textFile at NativeMethodAccessorImpl.java:0
+    text/hamlet.txt MapPartitionsRDD[1] at textFile at NativeMethodAccessorImpl.java:0
 
 
 
@@ -124,8 +118,7 @@ The text file has been written in a "line-by-line" manner into the RDD. We can a
 
 
 ```python
-print(lines.collect()[500])
-print(lines.collect()[1000])
+# Code here 
 ```
 
         But even then the morning cock crew loud,
@@ -141,9 +134,6 @@ Similarly, we can also print the whole document, lines by line.
 # Print the text, line-by-line
 # This will output the whole of hamlet text, one line at a time. 
 
-for line in lines.collect():
-    print(line)
-    
 ```
 
 Great, now that the complete text file is in a `lines` RDD, we can easily use the map function to break it down further into individual words and parallelize it accordingly. 
@@ -187,8 +177,9 @@ Previously, we saw that:
 ```python
 # split the lines into words based on blanks ' ' and show ten elements from the top 
 
-words = lines.flatMap(lambda x: x.split(' '))
-words.take(10)
+
+# Code here 
+
 
 # ['', '1604', '', '', 'THE', 'TRAGEDY', 'OF', 'HAMLET,', 'PRINCE', 'OF']
 ```
@@ -212,9 +203,8 @@ Map doesn't break up the output of the lambda expression, meaning that the tuple
 # Use a lambda function with map to add a 1 to each word and output a tuple
 # (word, 1) - Take ten elements
 
-tuples = words.map(lambda x: (x, 1))
-tuples.take(10)
 
+# Code here 
 ```
 
 
@@ -244,9 +234,8 @@ As we can see from the output above, the text contains words in capital as well 
 ```python
 # Change the words in words tuples to lowercase - take 10 elements 
 
-tuplesLCase = words.map(lambda x: (x.lower(), 1))
-tuplesLCase.take(10)
 
+# Code here 
 ```
 
 
@@ -278,10 +267,11 @@ Here, the lambda has two arguments (x and y) that are added.
 
 
 ```python
-# USe reduceByKey with tuplesLCase to add all values under same keys - take 10
+# Use reduceByKey with tuplesLCase to add all values under same keys - take 10
 
-wordCount = tuplesLCase.reduceByKey(lambda x,y: x+y)
-wordCount.take(10)
+
+# Code here 
+
 ```
 
 
@@ -313,8 +303,8 @@ For this step, we can use `RDD.filter(func)` where `func` is a lambda function t
 ```python
 # Remove all rare words with frequency less than 5 - take 10 
 
-freqWords = wordCount.filter(lambda x:  x[1] >= 5 )
-freqWords.take(10)
+
+# Code here 
 
 ```
 
@@ -350,9 +340,9 @@ Stop words can be useful for recognizing the style of an author. Removing stop w
 ```python
 # show stop word frequency in the output
 
-stopWordList = ['', 'the','a','in','of','on','at','for','by','i','you','me'] 
-stopWords = freqWords.filter(lambda x:  x[0] in stopWordList) 
-stopWords.collect()
+
+# Code here 
+
 
 ```
 
@@ -382,11 +372,9 @@ stopWords.collect()
 ```python
 # Modify above filter to show top ten keep words by frequency
 
-keepWords = freqWords.filter(lambda x:  x[0] not in stopWordList) 
-keepWords.take(10)
 
-output = keepWords.takeOrdered(10, key=lambda x: -x[1])
-output
+# Code here 
+
 ```
 
 
@@ -416,15 +404,7 @@ Combine the above code as a function and pass three works of Shakespeare (`'rome
 ```python
 # Create a function for word count that takes in a file name and stop wordlist to perform above tasks
 def wordCount(filename, stopWordlist):
-    output = sc.textFile(filename)
-    words1 = lines.flatMap(lambda x: x.split(' '))
-    words2 = words1.map(lambda x: (x.lower(), 1))
-    wordCount = words2.reduceByKey(lambda x,y: x+y)
-    freqWords = wordCount.filter(lambda x:  x[1] >= 5 )
-    stopWords = freqWords.filter(lambda x:  x[0] in stopWordList) 
-    output = stopWords.collect()
-    
-    return output
+    pass
 ```
 
 ## Level Up (Optional)
